@@ -3,6 +3,7 @@ from numpy.random import random, randint
 import time
 from copy import deepcopy
 
+import realEA
 from realEA import RealEA
 from simplegp.Variation import Variation
 from simplegp.Selection import Selection
@@ -42,7 +43,6 @@ class SimpleGP:
 		self.tournament_size = tournament_size
 
 		self.generations = 0
-		self.ea = RealEA()
 
 	def __ShouldTerminate(self):
 		must_terminate = False
@@ -55,11 +55,22 @@ class SimpleGP:
 			must_terminate = True
 
 		if must_terminate:
-			print('Terminating at\n\t', 
+			print('Terminating at\n\t',
 				self.generations, 'generations\n\t', self.fitness_function.evaluations, 'evaluations\n\t', np.round(elapsed_time,2), 'seconds')
 
 		return must_terminate
 
+	def set_weights(self, individual, weights):
+		subtree = self.individual.GetSubtree()
+
+		# Add original weights to the list
+		i = 0
+		for index in range(len(subtree)):
+			subtree[index].w0 = weights[i]
+			subtree[index].w1 = weights[i+1]
+			i += 2
+
+		return individual
 
 	def Run(self):
 
@@ -73,21 +84,25 @@ class SimpleGP:
 		while not self.__ShouldTerminate():
 
 			O = []
-			
+
 			for i in range( self.pop_size ):
-				
+
 				o = deepcopy(population[i])
-				if ( random() < self.crossover_rate ):
+				if random() < self.crossover_rate:
 					o = Variation.SubtreeCrossover( o, population[ randint( self.pop_size ) ] )
-				if ( random() < self.mutation_rate ):
+				if random() < self.mutation_rate:
 					o = Variation.SubtreeMutation( o, self.functions, self.terminals, max_height=self.initialization_max_tree_height )
-				
+
 				if len(o.GetSubtree()) > self.max_tree_size:
 					del o
 					o = deepcopy( population[i] )
 				else:
-					#TODO Weight tuning here
-					realEA.setWeights(o)
+					# Weight tuning here
+					if self.generations == 2:
+						rea = realEA.RealEA(o, self.fitness_function)
+						weights = rea.main()
+						self.set_weights(o, weights)
+
 					self.fitness_function.Evaluate(o)
 
 				O.append(o)
