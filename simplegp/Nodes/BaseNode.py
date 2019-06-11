@@ -8,6 +8,8 @@ class Node:	# Base class with general functionalities
 		self.parent = None
 		self.arity = 0	# arity is the number of expected inputs
 		self._children = []
+		self.w0 = 0
+		self.w1 = 1
 
 	def GetSubtree( self ):
 		result = []

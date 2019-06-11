@@ -14,7 +14,7 @@ class AddNode(Node):
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
 		X1 = self._children[1].GetOutput( X )
-		return X0 + X1
+		return self.w0 + self.w1*(X0 + X1)
 
 class SubNode(Node):
 	def __init__(self):
@@ -27,7 +27,7 @@ class SubNode(Node):
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
 		X1 = self._children[1].GetOutput( X )
-		return X0 - X1
+		return self.w0 + self.w1*(X0 - X1)
 
 class MulNode(Node):
 	def __init__(self):
@@ -40,7 +40,7 @@ class MulNode(Node):
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
 		X1 = self._children[1].GetOutput( X )
-		return np.multiply(X0 , X1)
+		return self.w0 + self.w1*(np.multiply(X0 , X1))
 	
 class DivNode(Node):
 	def __init__(self):
@@ -53,7 +53,7 @@ class DivNode(Node):
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
 		X1 = self._children[1].GetOutput( X )
-		return np.multiply( np.sign(X1), X0) / ( 1e-2 + np.abs(X1) )
+		return self.w0 + self.w1*(np.multiply( np.sign(X1), X0) / ( 1e-2 + np.abs(X1) ))
 
 class AnalyticQuotientNode(Node):
 	def __init__(self):
@@ -66,7 +66,7 @@ class AnalyticQuotientNode(Node):
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
 		X1 = self._children[1].GetOutput( X )
-		return X0 / np.sqrt( 1 + np.square(X1) )
+		return self.w0 + self.w1*(X0 / np.sqrt( 1 + np.square(X1) ))
 
 	
 class ExpNode(Node):
@@ -79,7 +79,7 @@ class ExpNode(Node):
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
-		return np.exp(X0)
+		return self.w0 + self.w1*(np.exp(X0))
 
 
 class LogNode(Node):
@@ -92,7 +92,7 @@ class LogNode(Node):
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
-		return np.log( np.abs(X0) + 1e-2 )
+		return self.w0 + self.w1*(np.log( np.abs(X0) + 1e-2 ))
 
 
 class SinNode(Node):
@@ -105,7 +105,7 @@ class SinNode(Node):
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
-		return np.sin(X0)
+		return self.w0 + self.w1*(np.sin(X0))
 
 class CosNode(Node):
 	def __init__(self):
@@ -117,7 +117,7 @@ class CosNode(Node):
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
-		return np.cos(X0)
+		return self.w0 + self.w1*(np.cos(X0))
 
 
 class FeatureNode(Node):
@@ -129,7 +129,7 @@ class FeatureNode(Node):
 		return 'x'+str(self.id)
 
 	def GetOutput(self, X):
-		return X[:,self.id]
+		return self.w0 + self.w1*(X[:,self.id])
 
 	
 class EphemeralRandomConstantNode(Node):
@@ -148,4 +148,4 @@ class EphemeralRandomConstantNode(Node):
 	def GetOutput(self,X):
 		if np.isnan(self.c):
 			self.__Instantiate()
-		return np.array([self.c] * X.shape[0])
+		return self.w0 + self.w1*(np.array([self.c] * X.shape[0]))
