@@ -1,7 +1,5 @@
 import random
 
-import numpy
-
 from deap import base
 from deap import creator
 from deap import tools
@@ -43,11 +41,11 @@ class RealEA:
 
     def main(self):
         # initialize the population with random individuals
-        pop = self.toolbox.population
+        pop = self.toolbox.population()
 
         print('Type of pop',type(pop))
         # replace one individual with old weights
-        pop[0] = self.initial_weights
+        pop[0].n = self.initial_weights
 
 
         CROSS_PROB, M_PROB, MAX_GEN= 0.5,0.2, 20
@@ -103,7 +101,7 @@ class RealEA:
 
     # Evaluation function
     def evaluate(self, individual):
-        return self.fitness_function.getFitness(individual)
+        return self.fitness_function.getFitness(self.gpIndividual)
 
 
     def extractWeights(self):
