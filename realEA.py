@@ -6,7 +6,19 @@ from deap import tools
 
 
 class RealEA:
-    def __init__(self, gp_individual, fitness_function):
+    def __init__(
+            self,
+            gp_individual,
+            fitness_function,
+            pop_size=10,
+            crossover_rate=0.5,
+            mutation_rate=0.5,
+            max_generations=20):
+
+        self.crossover_rate = crossover_rate
+        self.mutation_rate = mutation_rate
+        self.max_generations = max_generations
+
         self.gp_individual = gp_individual
         self.fitness_function = fitness_function
 
@@ -21,7 +33,6 @@ class RealEA:
 
         # Based on the number of weights in the current individual (depends on tree size)
         NUM_WEIGHTS = len(self.initial_weights)
-        POP_SIZE = 10
 
         # Attribute generator
         toolbox = base.Toolbox()
@@ -29,7 +40,7 @@ class RealEA:
 
         # Structure initializers
         toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_float, n=NUM_WEIGHTS)
-        toolbox.register("population", tools.initRepeat, list, toolbox.individual, n=POP_SIZE)
+        toolbox.register("population", tools.initRepeat, list, toolbox.individual, n=pop_size)
 
         # Operator registering
         toolbox.register("evaluate", self.evaluate)
@@ -46,9 +57,6 @@ class RealEA:
         # replace one individual with old weights
         pop[0].n = self.initial_weights
 
-        # Crossover probability, mutation probability and max number of generations to run
-        CROSS_PROB, M_PROB, MAX_GEN = 0.5, 0.2, 20
-
         # Evaluate the entire population
         fitnesses = map(self.toolbox.evaluate, pop)
 
@@ -61,7 +69,7 @@ class RealEA:
                 elite = ind
                 elite_fitness = fit
 
-        for g in range(MAX_GEN):
+        for g in range(self.max_generations):
             # Select the next generation individuals
             selected = self.toolbox.select(pop, len(pop))
             # Clone the selected individuals
@@ -69,14 +77,14 @@ class RealEA:
 
             # Apply crossover
             for child1, child2 in zip(offspring[::2], offspring[1::2]):
-                if random.random() < CROSS_PROB:
+                if random.random() < self.crossover_rate:
                     self.toolbox.crossover(child1, child2)
                     del child1.fitness.values
                     del child2.fitness.values
 
             # and mutation on the offspring
             for mutant in offspring:
-                if random.random() < M_PROB:
+                if random.random() < self.mutation_rate:
                     self.toolbox.mutate(mutant)
                     del mutant.fitness.values
 
