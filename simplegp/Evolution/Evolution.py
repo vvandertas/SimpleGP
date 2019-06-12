@@ -61,7 +61,7 @@ class SimpleGP:
 		return must_terminate
 
 	def set_weights(self, individual, weights):
-		subtree = self.individual.GetSubtree()
+		subtree = individual.GetSubtree()
 
 		# Add original weights to the list
 		i = 0

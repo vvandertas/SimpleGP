@@ -16,7 +16,7 @@ class RealEA:
         # Single objective Fitness class, minimizing fitness
         creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
 
-        # Individual class with base type list with a fitness attribute set to jus tthe created fitness
+        # Individual class with base type list with a fitness attribute set to just the created fitness
         creator.create("Individual", list, fitness=creator.FitnessMin)
 
         # Equal to arity of the functions
@@ -43,7 +43,6 @@ class RealEA:
         # initialize the population with random individuals
         pop = self.toolbox.population()
 
-        print('Type of pop',type(pop))
         # replace one individual with old weights
         pop[0].n = self.initial_weights
 
@@ -58,7 +57,7 @@ class RealEA:
         elite_fitness = 1
         for ind, fit in zip(pop, fitnesses):
             ind.fitness.values = fit
-            if fit < elite_fitness:
+            if fit[0] < elite_fitness:
                 elite = ind
                 elite_fitness = fit
 
@@ -67,7 +66,7 @@ class RealEA:
             # Select the next generation individuals
             selected = self.toolbox.select(pop, len(pop))
             # Clone the selected individuals
-            offspring = map(self.toolbox.clone, selected)
+            offspring = list(map(self.toolbox.clone, selected))
 
             # Apply crossover and mutation on the offspring
             for child1, child2 in zip(offspring[::2], offspring[1::2]):
@@ -101,7 +100,7 @@ class RealEA:
 
     # Evaluation function
     def evaluate(self, individual):
-        return self.fitness_function.getFitness(self.gpIndividual)
+        return (self.fitness_function.getFitness(self.gpIndividual),)
 
 
     def extractWeights(self):
@@ -114,7 +113,3 @@ class RealEA:
             weights.append(subtree[index].w1)
 
         return weights
-
-
-
-# TODO: Use HallOfFame?
