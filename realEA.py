@@ -6,12 +6,12 @@ from deap import tools
 
 
 class RealEA:
-    def __init__(self, gpIndividual, fitness_function):
-        self.gpIndividual = gpIndividual
+    def __init__(self, gp_individual, fitness_function):
+        self.gp_individual = gp_individual
         self.fitness_function = fitness_function
 
         # extract all weights from the individual
-        self.initial_weights = self.extractWeights()
+        self.initial_weights = self.extract_weights()
 
         # Single objective Fitness class, minimizing fitness
         creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
@@ -19,7 +19,7 @@ class RealEA:
         # Individual class with base type list with a fitness attribute set to just the created fitness
         creator.create("Individual", list, fitness=creator.FitnessMin)
 
-        # Equal to arity of the functions
+        # Based on the number of weights in the current individual (depends on tree size)
         NUM_WEIGHTS = len(self.initial_weights)
         POP_SIZE = 10
 
@@ -46,8 +46,8 @@ class RealEA:
         # replace one individual with old weights
         pop[0].n = self.initial_weights
 
-
-        CROSS_PROB, M_PROB, MAX_GEN= 0.5,0.2, 20
+        # Crossover probability, mutation probability and max number of generations to run
+        CROSS_PROB, M_PROB, MAX_GEN = 0.5, 0.2, 20
 
         # Evaluate the entire population
         fitnesses = map(self.toolbox.evaluate, pop)
@@ -61,20 +61,20 @@ class RealEA:
                 elite = ind
                 elite_fitness = fit
 
-
         for g in range(MAX_GEN):
             # Select the next generation individuals
             selected = self.toolbox.select(pop, len(pop))
             # Clone the selected individuals
             offspring = list(map(self.toolbox.clone, selected))
 
-            # Apply crossover and mutation on the offspring
+            # Apply crossover
             for child1, child2 in zip(offspring[::2], offspring[1::2]):
                 if random.random() < CROSS_PROB:
                     self.toolbox.crossover(child1, child2)
                     del child1.fitness.values
                     del child2.fitness.values
 
+            # and mutation on the offspring
             for mutant in offspring:
                 if random.random() < M_PROB:
                     self.toolbox.mutate(mutant)
@@ -95,17 +95,18 @@ class RealEA:
             # The population is entirely replaced by the offspring
             pop[:] = offspring
 
+        # Only return the elite
         return elite
-
 
     # Evaluation function
     def evaluate(self, individual):
-        return (self.fitness_function.getFitness(self.gpIndividual),)
 
+        return self.fitness_function.getFitness(self.gp_individual),
 
-    def extractWeights(self):
+    def extract_weights(self):
+
         weights = []
-        subtree = self.gpIndividual.GetSubtree()
+        subtree = self.gp_individual.GetSubtree()
 
         # Add original weights to the list
         for index in range(len(subtree)):
