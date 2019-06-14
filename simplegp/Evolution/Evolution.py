@@ -117,4 +117,4 @@ class SimpleGP:
 
             self.generations = self.generations + 1
             self.realEAflag = False
-            print ('g:',self.generations,'elite fitness:', np.round(self.fitness_function.elite.fitness,3), ', size:', len(self.fitness_function.elite.GetSubtree()))
+            print ('g:',self.generations,'elite fitness:', self.fitness_function.elite.fitness, ', size:', len(self.fitness_function.elite.GetSubtree()))

@@ -15,6 +15,7 @@ class RealEA:
             mutation_rate=0.5,
             max_generations=20):
 
+        
         self.crossover_rate = crossover_rate
         self.mutation_rate = mutation_rate
         self.max_generations = max_generations
