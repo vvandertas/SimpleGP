@@ -36,10 +36,11 @@ class RealEA:
 
         # Attribute generator
         toolbox = base.Toolbox()
-        toolbox.register("attr_float", random.random)
+        toolbox.register("scalar_weight", random.gauss,mu=1,sigma=0.5)
+        toolbox.register("bias_weight",random.gauss,mu=0,sigma=0.5)
 
         # Structure initializers
-        toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_float, n=NUM_WEIGHTS)
+        toolbox.register("individual", tools.initCycle, creator.Individual, (toolbox.bias_weight, toolbox.scalar_weight), n=int(NUM_WEIGHTS/2))
         toolbox.register("population", tools.initRepeat, list, toolbox.individual, n=pop_size)
 
         # Operator registering
