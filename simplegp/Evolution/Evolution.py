@@ -25,7 +25,9 @@ class SimpleGP:
         initialization_max_tree_height=4,
         max_tree_size=100,
         tournament_size=4,
-        weight_tuning_rate=1.0
+        weight_tuning_individual_rate=1.0,
+        weight_tuning_generation_rate=5,
+        weight_tuning_max_generations = -1
         ):
 
         self.pop_size = pop_size
@@ -42,6 +44,10 @@ class SimpleGP:
         self.initialization_max_tree_height = initialization_max_tree_height
         self.max_tree_size = max_tree_size
         self.tournament_size = tournament_size
+
+        self.weight_tuning_individual_rate = weight_tuning_individual_rate
+        self.weight_tuning_generation_rate = weight_tuning_generation_rate
+        self.weight_tuning_max_generations = weight_tuning_max_generations
 
         self.generations = 0
         self.realEAflag = False
@@ -85,7 +91,7 @@ class SimpleGP:
             self.fitness_function.Evaluate( population[i] )
 
         while not self.__ShouldTerminate():
-            if self.generations%5 == 0:
+            if self.generations % self.weight_tuning_generation_rate == 0 and (self.weight_tuning_max_generations == -1 or self.generations <= self.weight_tuning_max_generations):
                 self.realEAflag = True
                 print("Using real EA for generation: ", self.generations)
                 
@@ -104,7 +110,7 @@ class SimpleGP:
                     o = deepcopy( population[i] )
                 else:
                     # Weight tuning here
-                    if self.realEAflag and random() < self.weight_tuning_rate:
+                    if self.realEAflag and random() < self.weight_tuning_individual_rate:
                         rea = realEA.RealEA(o, self.fitness_function)
                         weights = rea.main()
                         self.set_weights(o, weights)
