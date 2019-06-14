@@ -11,105 +11,106 @@ from simplegp.Selection import Selection
 
 class SimpleGP:
 
-	def __init__(
-		self,
-		fitness_function,
-		functions,
-		terminals,
-		pop_size=500,
-		crossover_rate=0.5,
-		mutation_rate=0.5,
-		max_evaluations=-1,
-		max_generations=-1,
-		max_time=-1,
-		initialization_max_tree_height=4,
-		max_tree_size=100,
-		tournament_size=4
-		):
+    def __init__(
+        self,
+        fitness_function,
+        functions,
+        terminals,
+        pop_size=500,
+        crossover_rate=0.5,
+        mutation_rate=0.5,
+        max_evaluations=-1,
+        max_generations=-1,
+        max_time=-1,
+        initialization_max_tree_height=4,
+        max_tree_size=100,
+        tournament_size=4
+        ):
 
-		self.pop_size = pop_size
-		self.fitness_function = fitness_function
-		self.functions = functions
-		self.terminals = terminals
-		self.crossover_rate = crossover_rate
-		self.mutation_rate = mutation_rate
+        self.pop_size = pop_size
+        self.fitness_function = fitness_function
+        self.functions = functions
+        self.terminals = terminals
+        self.crossover_rate = crossover_rate
+        self.mutation_rate = mutation_rate
 
-		self.max_evaluations = max_evaluations
-		self.max_generations = max_generations
-		self.max_time = max_time
+        self.max_evaluations = max_evaluations
+        self.max_generations = max_generations
+        self.max_time = max_time
 
-		self.initialization_max_tree_height = initialization_max_tree_height
-		self.max_tree_size = max_tree_size
-		self.tournament_size = tournament_size
+        self.initialization_max_tree_height = initialization_max_tree_height
+        self.max_tree_size = max_tree_size
+        self.tournament_size = tournament_size
 
-		self.generations = 0
+        self.generations = 0
 
-	def __ShouldTerminate(self):
-		must_terminate = False
-		elapsed_time = time.time() - self.start_time
-		if self.max_evaluations > 0 and self.fitness_function.evaluations >= self.max_evaluations:
-			must_terminate = True
-		elif self.max_generations > 0 and self.generations >= self.max_generations:
-			must_terminate = True
-		elif self.max_time > 0 and elapsed_time >= self.max_time:
-			must_terminate = True
+    def __ShouldTerminate(self):
+        must_terminate = False
+        elapsed_time = time.time() - self.start_time
+        if self.max_evaluations > 0 and self.fitness_function.evaluations >= self.max_evaluations:
+            must_terminate = True
+        elif self.max_generations > 0 and self.generations >= self.max_generations:
+            must_terminate = True
+        elif self.max_time > 0 and elapsed_time >= self.max_time:
+            must_terminate = True
 
-		if must_terminate:
-			print('Terminating at\n\t',
-				self.generations, 'generations\n\t', self.fitness_function.evaluations, 'evaluations\n\t', np.round(elapsed_time,2), 'seconds')
+        if must_terminate:
+            print('Terminating at\n\t',
+                self.generations, 'generations\n\t', self.fitness_function.evaluations, 'evaluations\n\t', np.round(elapsed_time,2), 'seconds')
 
-		return must_terminate
+        return must_terminate
 
-	def set_weights(self, individual, weights):
-		subtree = individual.GetSubtree()
+    def set_weights(self, individual, weights):
+        subtree = individual.GetSubtree()
 
-		# Add original weights to the list
-		i = 0
-		for index in range(len(subtree)):
-			subtree[index].w0 = weights[i]
-			subtree[index].w1 = weights[i+1]
-			i += 2
+        # Add original weights to the list
+        i = 0
+        for index in range(len(subtree)):
+            subtree[index].w0 = weights[i]
+            subtree[index].w1 = weights[i+1]
+            i += 2
 
-		return individual
+        return individual
 
-	def Run(self):
+    def Run(self):
 
-		self.start_time = time.time()
+        self.start_time = time.time()
 
-		population = []
-		for i in range( self.pop_size ):
-			population.append( Variation.GenerateRandomTree( self.functions, self.terminals, self.initialization_max_tree_height ) )
-			self.fitness_function.Evaluate( population[i] )
+        population = []
+        for i in range( self.pop_size ):
+            population.append( Variation.GenerateRandomTree( self.functions, self.terminals, self.initialization_max_tree_height ) )
+            self.fitness_function.Evaluate( population[i] )
 
-		while not self.__ShouldTerminate():
+        while not self.__ShouldTerminate():
 
-			O = []
+            O = []
 
-			for i in range( self.pop_size ):
+            for i in range( self.pop_size ):
 
-				o = deepcopy(population[i])
-				if random() < self.crossover_rate:
-					o = Variation.SubtreeCrossover( o, population[ randint( self.pop_size ) ] )
-				if random() < self.mutation_rate:
-					o = Variation.SubtreeMutation( o, self.functions, self.terminals, max_height=self.initialization_max_tree_height )
+                o = deepcopy(population[i])
+                if random() < self.crossover_rate:
+                    o = Variation.SubtreeCrossover( o, population[ randint( self.pop_size ) ] )
+                if random() < self.mutation_rate:
+                    o = Variation.SubtreeMutation( o, self.functions, self.terminals, max_height=self.initialization_max_tree_height )
 
-				if len(o.GetSubtree()) > self.max_tree_size:
-					del o
-					o = deepcopy( population[i] )
-				else:
-					# Weight tuning here
-					if self.generations == 2:
-						rea = realEA.RealEA(o, self.fitness_function)
-						weights = rea.main()
-						self.set_weights(o, weights)
+                if len(o.GetSubtree()) > self.max_tree_size:
+                    del o
+                    o = deepcopy( population[i] )
+                else:
+                    # Weight tuning here
+                    if self.generations == 2:
+                        print("Using real valued EA")
+                        rea = realEA.RealEA(o, self.fitness_function)
+                        weights = rea.main()
+                        self.set_weights(o, weights)
 
-					self.fitness_function.Evaluate(o)
+                    self.fitness_function.Evaluate(o)
 
-				O.append(o)
+                O.append(o)
 
-			PO = population+O
-			population = Selection.TournamentSelect( PO, self.pop_size, tournament_size=self.tournament_size )
+            PO = population+O
+            population = Selection.TournamentSelect( PO, self.pop_size, tournament_size=self.tournament_size )
 
-			self.generations = self.generations + 1
+            self.generations = self.generations + 1
 
-			print ('g:',self.generations,'elite fitness:', np.round(self.fitness_function.elite.fitness,3), ', size:', len(self.fitness_function.elite.GetSubtree()))
+            print ('g:',self.generations,'elite fitness:', np.round(self.fitness_function.elite.fitness,3), ', size:', len(self.fitness_function.elite.GetSubtree()))
