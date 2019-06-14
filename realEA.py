@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 
 from deap import base
 from deap import creator
@@ -64,10 +65,10 @@ class RealEA:
 
         # Keep track of elite individual and its fitness
         elite = []
-        elite_fitness = 1
+        elite_fitness = (1,)
         for ind, fit in zip(pop, fitnesses):
             ind.fitness.values = fit
-            if fit[0] < elite_fitness:
+            if fit[0] < elite_fitness[0]:
                 elite = ind
                 elite_fitness = fit
 
@@ -95,10 +96,9 @@ class RealEA:
             fitnesses = map(self.toolbox.evaluate, invalid_ind)
             for ind, fit in zip(invalid_ind, fitnesses):
                 ind.fitness.values = fit
-                ind.fitness.values = fit
 
                 # compare with current elite
-                if fit < elite_fitness:
+                if fit[0] < elite_fitness[0]:
                     elite = ind
                     elite_fitness = fit
 
@@ -110,8 +110,10 @@ class RealEA:
 
     # Evaluation function
     def evaluate(self, individual):
+        cloned_tree = deepcopy(self.gp_individual)
+        cloned_tree.set_weights(individual)
 
-        return self.fitness_function.getFitness(self.gp_individual),
+        return self.fitness_function.getFitness(cloned_tree),
 
     def extract_weights(self):
 

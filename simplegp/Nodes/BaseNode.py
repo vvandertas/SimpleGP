@@ -50,3 +50,14 @@ class Node:	# Base class with general functionalities
 			c.__GetSubtreeRecursive( result )
 		return result
 
+
+	def set_weights(self, weights):
+		subtree = self.GetSubtree()
+
+		# Add original weights to the list
+		i = 0
+		for index in range(len(subtree)):
+			subtree[index].w0 = weights[i]
+			subtree[index].w1 = weights[i+1]
+			i += 2
+
