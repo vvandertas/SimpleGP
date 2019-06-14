@@ -68,17 +68,6 @@ class SimpleGP:
 
         return must_terminate
 
-    def set_weights(self, individual, weights):
-        subtree = individual.GetSubtree()
-
-        # Add original weights to the list
-        i = 0
-        for index in range(len(subtree)):
-            subtree[index].w0 = weights[i]
-            subtree[index].w1 = weights[i+1]
-            i += 2
-
-        return individual
 
     def Run(self):
 
@@ -113,7 +102,7 @@ class SimpleGP:
                     if self.realEAflag and random() < self.weight_tuning_individual_rate:
                         rea = realEA.RealEA(o, self.fitness_function)
                         weights = rea.main()
-                        self.set_weights(o, weights)
+                        o.set_weights(weights)
 
                     self.fitness_function.Evaluate(o)
 
