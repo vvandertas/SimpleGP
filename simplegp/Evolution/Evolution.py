@@ -24,7 +24,8 @@ class SimpleGP:
         max_time=-1,
         initialization_max_tree_height=4,
         max_tree_size=100,
-        tournament_size=4
+        tournament_size=4,
+        weight_tuning_rate=1.0
         ):
 
         self.pop_size = pop_size
@@ -103,7 +104,7 @@ class SimpleGP:
                     o = deepcopy( population[i] )
                 else:
                     # Weight tuning here
-                    if self.realEAflag:
+                    if self.realEAflag and random() < self.weight_tuning_rate:
                         rea = realEA.RealEA(o, self.fitness_function)
                         weights = rea.main()
                         self.set_weights(o, weights)
