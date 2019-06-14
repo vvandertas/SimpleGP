@@ -43,6 +43,7 @@ class SimpleGP:
         self.tournament_size = tournament_size
 
         self.generations = 0
+        self.realEAflag = False
 
     def __ShouldTerminate(self):
         must_terminate = False
@@ -75,16 +76,20 @@ class SimpleGP:
     def Run(self):
 
         self.start_time = time.time()
-
+        
+            
         population = []
         for i in range( self.pop_size ):
             population.append( Variation.GenerateRandomTree( self.functions, self.terminals, self.initialization_max_tree_height ) )
             self.fitness_function.Evaluate( population[i] )
 
         while not self.__ShouldTerminate():
-
+            if self.generations%5 == 0:
+                self.realEAflag = True
+                print("Using real EA for generation: ", self.generations)
+                
             O = []
-
+            
             for i in range( self.pop_size ):
 
                 o = deepcopy(population[i])
@@ -98,8 +103,7 @@ class SimpleGP:
                     o = deepcopy( population[i] )
                 else:
                     # Weight tuning here
-                    if self.generations == 2:
-                        print("Using real valued EA")
+                    if self.realEAflag:
                         rea = realEA.RealEA(o, self.fitness_function)
                         weights = rea.main()
                         self.set_weights(o, weights)
@@ -112,5 +116,5 @@ class SimpleGP:
             population = Selection.TournamentSelect( PO, self.pop_size, tournament_size=self.tournament_size )
 
             self.generations = self.generations + 1
-
+            self.realEAflag = False
             print ('g:',self.generations,'elite fitness:', np.round(self.fitness_function.elite.fitness,3), ', size:', len(self.fitness_function.elite.GetSubtree()))

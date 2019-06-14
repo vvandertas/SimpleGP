@@ -52,11 +52,12 @@ print('Function found (', len(nodes_final_evolved_function), 'nodes ):\n\t',
       nodes_final_evolved_function)  # this is in Polish notation
 
 # Print results for training set
-print('Training\n\tMSE:', np.round(final_evolved_function.fitness, 3),
-      '\n\tRsquared:', np.round(1.0 - final_evolved_function.fitness / np.var(y_train), 3))
+print('Training\n\terror rate:', final_evolved_function.fitness)
 
 # Re-evaluate the evolved function on the test set
-test_prediction = final_evolved_function.GetOutput(X_test)
-test_mse = np.mean(np.square(y_test - test_prediction))
-print('Test:\n\tMSE:', np.round(test_mse, 3),
-      '\n\tRsquared:', np.round(1.0 - test_mse / np.var(y_test), 3))
+test_prediction = np.arctan(final_evolved_function.GetOutput(X_test))
+test_prediction[test_prediction >= 0] = 1
+test_prediction[test_prediction < 0] = -1
+
+test_error_rate = 1 - (np.sum(y_test == test_prediction) / len(y_test))
+print('Test:\n\terror rate:', test_error_rate)
