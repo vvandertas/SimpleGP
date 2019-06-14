@@ -64,13 +64,13 @@ class RealEA:
         fitnesses = map(self.toolbox.evaluate, pop)
 
         # Keep track of elite individual and its fitness
-        elite = []
-        elite_fitness = (1,)
+        elite = self.initial_weights
+        elite_fitness = self.evaluate(self.initial_weights)
         for ind, fit in zip(pop, fitnesses):
             ind.fitness.values = fit
             if fit[0] < elite_fitness[0]:
-                elite = ind
-                elite_fitness = fit
+                elite = deepcopy(ind)
+                elite_fitness = deepcopy(fit)
 
         for g in range(self.max_generations):
             # Select the next generation individuals
@@ -99,8 +99,8 @@ class RealEA:
 
                 # compare with current elite
                 if fit[0] < elite_fitness[0]:
-                    elite = ind
-                    elite_fitness = fit
+                    elite = deepcopy(ind)
+                    elite_fitness = deepcopy(fit)
 
             # The population is entirely replaced by the offspring
             pop[:] = offspring
