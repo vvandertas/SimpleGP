@@ -27,7 +27,10 @@ class SimpleGP:
         tournament_size=4,
         weight_tuning_individual_rate=1.0,
         weight_tuning_generation_rate=5,
-        weight_tuning_max_generations = -1
+        weight_tuning_max_generations = -1,
+        real_pop_size = 10,
+        real_crossover_rate = 0.5,
+        real_mutation_rate = 0.5
         ):
 
         self.pop_size = pop_size
@@ -48,6 +51,9 @@ class SimpleGP:
         self.weight_tuning_individual_rate = weight_tuning_individual_rate
         self.weight_tuning_generation_rate = weight_tuning_generation_rate
         self.weight_tuning_max_generations = weight_tuning_max_generations
+        self.real_pop_size = real_pop_size
+        self.real_crossover_rate = real_crossover_rate
+        self.real_mutation_rate = real_mutation_rate
 
         self.generations = 0
         self.realEAflag = False
@@ -100,7 +106,8 @@ class SimpleGP:
                 else:
                     # Weight tuning here
                     if self.realEAflag and random() < self.weight_tuning_individual_rate:
-                        rea = realEA.RealEA(o, self.fitness_function)
+                        rea = realEA.RealEA(o, self.fitness_function,pop_size = self.real_pop_size,
+                        crossover_rate = self.real_crossover_rate, mutation_rate = self.real_mutation_rate)
                         weights = rea.main()
                         o.set_weights(weights)
 
