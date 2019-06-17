@@ -9,7 +9,7 @@ class AddNode(Node):
 		self.arity = 2
 
 	def __repr__(self):
-		return '+'
+		return '({:.2f} + {:.2f} * ({} + {}))'.format(self.w0, self.w1, self._children[0], self._children[1])
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
@@ -22,7 +22,7 @@ class SubNode(Node):
 		self.arity = 2
 
 	def __repr__(self):
-		return '-'
+		return '({:.2f} + {:.2f} * ({} - {}))'.format(self.w0, self.w1, self._children[0], self._children[1])
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
@@ -35,7 +35,7 @@ class MulNode(Node):
 		self.arity = 2
 
 	def __repr__(self):
-		return '*'
+		return '({:.2f} + {:.2f} * ({} * {}))'.format(self.w0, self.w1, self._children[0], self._children[1])
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
@@ -48,7 +48,7 @@ class DivNode(Node):
 		self.arity = 2
 
 	def __repr__(self):
-		return '/'
+		return '({:.2f} + {:.2f} * ({} / {}))'.format(self.w0, self.w1, self._children[0], self._children[1])
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
@@ -61,7 +61,7 @@ class AnalyticQuotientNode(Node):
 		self.arity = 2
 
 	def __repr__(self):
-		return 'aq'
+		return '({:.2f} + {:.2f} * ({} / sqrt(1 + {}^2)))'.format(self.w0, self.w1, self._children[0], self._children[1])
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
@@ -75,7 +75,7 @@ class ExpNode(Node):
 		self.arity = 1
 
 	def __repr__(self):
-		return 'exp'
+		return '({:.2f} + {:.2f} * exp({}))'.format(self.w0, self.w1, self._children[0])
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
@@ -88,7 +88,7 @@ class LogNode(Node):
 		self.arity = 1
 
 	def __repr__(self):
-		return 'log'
+		return '({:.2f} + {:.2f} * log({}))'.format(self.w0, self.w1, self._children[0])
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
@@ -101,7 +101,7 @@ class SinNode(Node):
 		self.arity = 1
 
 	def __repr__(self):
-		return 'sin'
+		return '({:.2f} + {:.2f} * sin({}))'.format(self.w0, self.w1, self._children[0])
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
@@ -113,7 +113,7 @@ class CosNode(Node):
 		self.arity = 1
 
 	def __repr__(self):
-		return 'cos'
+		return '({:.2f} + {:.2f} * cos({}))'.format(self.w0, self.w1, self._children[0])
 
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
@@ -126,7 +126,7 @@ class FeatureNode(Node):
 		self.id = id
 
 	def __repr__(self):
-		return 'x'+str(self.id)
+		return '({:.2f} + {:.2f} * x{})'.format(self.w0, self.w1, self.id)
 
 	def GetOutput(self, X):
 		return self.w0 + self.w1*(X[:,self.id])

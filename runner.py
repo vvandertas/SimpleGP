@@ -82,7 +82,7 @@ for train_index, test_index in rkf.split(X):
     final_evolved_function = fitness_function.elite
     nodes_final_evolved_function = final_evolved_function.GetSubtree()
     print('Function found (', len(nodes_final_evolved_function), 'nodes ):\n\t',
-          nodes_final_evolved_function)  # this is in Polish notation
+          final_evolved_function)  # this is in Polish notation
 
     # Print results for training set
     print('Training\n\terror rate:', final_evolved_function.fitness)
