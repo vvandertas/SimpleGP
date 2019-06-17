@@ -25,6 +25,8 @@ result_data_folder = "result_data/"
 
 GP_POP_SIZE = 100
 GP_MAX_GENERATIONS = 100
+GP_CROSSOVER_RATE = 0.5 
+GP_MUTATION_RATE = 0.5
 WEIGHT_TUNING_INDIVIDUAL_RATE = 0.0 #1.0
 WEIGHT_TUNING_GENERATION_RATE = -1 #5
 WEIGHT_TUNING_MAX_GENERATIONS = 0 #20
@@ -33,7 +35,7 @@ REAL_CROSSOVER_RATE = None #0.5
 REAL_MUTATION_RATE = None #0.5
 
 
-parameters = str(GP_POP_SIZE) + "_" + str(GP_MAX_GENERATIONS) + "_" + str(WEIGHT_TUNING_INDIVIDUAL_RATE) + "_" + str(WEIGHT_TUNING_GENERATION_RATE) + "_" + str(WEIGHT_TUNING_MAX_GENERATIONS) + "_" + str(REAL_POP_SIZE) + "_" + str(REAL_CROSSOVER_RATE) + "_" + str(REAL_MUTATION_RATE)
+parameters = str(GP_POP_SIZE) + "_" + str(GP_MAX_GENERATIONS) + "_" + str(GP_CROSSOVER_RATE) + "_" + str(GP_MUTATION_RATE) + "_" + str(WEIGHT_TUNING_INDIVIDUAL_RATE) + "_" + str(WEIGHT_TUNING_GENERATION_RATE) + "_" + str(WEIGHT_TUNING_MAX_GENERATIONS) + "_" + str(REAL_POP_SIZE) + "_" + str(REAL_CROSSOVER_RATE) + "_" + str(REAL_MUTATION_RATE)
 
 filename = result_data_folder + parameters + ".csv"
 
@@ -72,8 +74,8 @@ for train_index, test_index in rkf.split(X):
 
     # Run GP
     sgp = SimpleGP(fitness_function, functions, terminals, pop_size=GP_POP_SIZE, max_generations=GP_MAX_GENERATIONS
-        ,weight_tuning_individual_rate=WEIGHT_TUNING_INDIVIDUAL_RATE,weight_tuning_generation_rate=WEIGHT_TUNING_GENERATION_RATE
-        ,weight_tuning_max_generations=WEIGHT_TUNING_MAX_GENERATIONS
+        ,crossover_rate=GP_CROSSOVER_RATE,mutation_rate=GP_MUTATION_RATE,weight_tuning_individual_rate=WEIGHT_TUNING_INDIVIDUAL_RATE
+        ,weight_tuning_generation_rate=WEIGHT_TUNING_GENERATION_RATE,weight_tuning_max_generations=WEIGHT_TUNING_MAX_GENERATIONS
         ,real_pop_size=REAL_POP_SIZE,real_crossover_rate=REAL_CROSSOVER_RATE,real_mutation_rate=REAL_MUTATION_RATE)  # other parameters are optional
     sgp.Run()
 
