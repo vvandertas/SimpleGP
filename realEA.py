@@ -49,7 +49,7 @@ class RealEA:
         toolbox.register("evaluate", self.evaluate)
         toolbox.register("crossover", tools.cxUniform, indpb=0.1)
         toolbox.register("mutate", tools.mutGaussian, mu=0.0, sigma=0.2, indpb=0.2)
-        toolbox.register("select", tools.selTournament, tournsize=4)
+        toolbox.register("select", tools.selTournament, tournsize=2)
 
         self.toolbox = toolbox
 
