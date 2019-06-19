@@ -107,7 +107,7 @@ for train_index, test_index in rkf.split(X):
         
 file.close()
 
-result = parameters+","+str(np.mean(test_errors))+","+str(np.mean(nr_of_evaluations))+","+str(np.mean(tree_sizes))+","+str(best_test_error)
+result = parameters+","+str(np.mean(test_errors))+","+str(np.var(test_errors))+","+str(np.mean(nr_of_evaluations))+","+str(np.var(nr_of_evaluations))+","+str(np.mean(tree_sizes))+","+str(np.var(tree_sizes))+","+str(best_test_error)
 global_file = open(global_result_filename,"a")
 global_file.write("\n" + result)
 global_file.close

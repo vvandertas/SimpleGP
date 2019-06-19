@@ -1,1 +1,1 @@
-parameters,mean test error,mean nr of evaluations,average tree size,best test error
+parameters,mean test error,var test error, mean nr of evaluations,var nr evaluations,average tree size,var tree size,best test error
