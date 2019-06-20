@@ -25,14 +25,14 @@ result_data_folder = "result_data/"
 
 GP_POP_SIZE = 100
 GP_MAX_GENERATIONS = 100
-GP_CROSSOVER_RATE = 0.5 
+GP_CROSSOVER_RATE = 1.0
 GP_MUTATION_RATE = 0.5
-WEIGHT_TUNING_INDIVIDUAL_RATE = 0.0 #1.0
-WEIGHT_TUNING_GENERATION_RATE = -1 #5
-WEIGHT_TUNING_MAX_GENERATIONS = 0 #20
-REAL_POP_SIZE = None #10
-REAL_CROSSOVER_RATE = None #0.5
-REAL_MUTATION_RATE = None #0.5
+WEIGHT_TUNING_INDIVIDUAL_RATE = 0.9
+WEIGHT_TUNING_GENERATION_RATE = 5 #10, 20
+WEIGHT_TUNING_MAX_GENERATIONS = 100
+REAL_POP_SIZE = 10
+REAL_CROSSOVER_RATE = 0.5
+REAL_MUTATION_RATE = 0.5
 
 
 parameters = str(GP_POP_SIZE) + "_" + str(GP_MAX_GENERATIONS) + "_" + str(GP_CROSSOVER_RATE) + "_" + str(GP_MUTATION_RATE) + "_" + str(WEIGHT_TUNING_INDIVIDUAL_RATE) + "_" + str(WEIGHT_TUNING_GENERATION_RATE) + "_" + str(WEIGHT_TUNING_MAX_GENERATIONS) + "_" + str(REAL_POP_SIZE) + "_" + str(REAL_CROSSOVER_RATE) + "_" + str(REAL_MUTATION_RATE)
@@ -50,21 +50,18 @@ best_test_error = 1.0
 file = open(filename,"w+")
 file.write("test error,nr of evaluations, tree size")
 
+nsplits = 10
+nrepeats = 10
 # create training and testing vars
-rkf = RepeatedKFold(n_splits=10, n_repeats=10,random_state=42)
+rkf = RepeatedKFold(n_splits=nsplits, n_repeats=nrepeats,random_state=42)
+counter = 1
 for train_index, test_index in rkf.split(X):
+    print(counter,"/",nsplits*nrepeats)
     X_train, X_test = X[train_index], X[test_index]
     y_train, y_test = y[train_index], y[test_index]
-    print(X_train.shape, y_train.shape)
-    print(X_test.shape, y_test.shape)
-
-    print('Type of X_train: ', X_train.dtype)
-    print('Type of y_train: ', y_train.dtype)
 
     # Set fitness function
     fitness_function = SymbolicRegressionFitness(X_train, y_train.astype(float))
-    print(fitness_function)
-
 
     # Set functions and terminals
     functions = [AddNode(), SubNode(), MulNode(), AnalyticQuotientNode()]  # chosen function nodes
@@ -105,6 +102,7 @@ for train_index, test_index in rkf.split(X):
     if test_error_rate < best_test_error:
         best_test_error = test_error_rate
         
+    counter += 1
 file.close()
 
 result = parameters+","+str(np.mean(test_errors))+","+str(np.var(test_errors))+","+str(np.mean(nr_of_evaluations))+","+str(np.var(nr_of_evaluations))+","+str(np.mean(tree_sizes))+","+str(np.var(tree_sizes))+","+str(best_test_error)
