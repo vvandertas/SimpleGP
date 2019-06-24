@@ -86,7 +86,7 @@ class SimpleGP:
             self.fitness_function.Evaluate( population[i] )
 
         while not self.__ShouldTerminate():
-            if self.generations % self.weight_tuning_generation_rate == 0  and (self.weight_tuning_max_generations == -1 or self.generations <= self.weight_tuning_max_generations):
+            if self.generations != 0 and self.generations % self.weight_tuning_generation_rate == 0  and (self.weight_tuning_max_generations == -1 or self.generations <= self.weight_tuning_max_generations):
                 self.realEAflag = True
                 print("Using real EA for generation: ", self.generations)
                 
