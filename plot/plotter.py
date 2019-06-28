@@ -42,19 +42,27 @@ class Plotter:
             'layout': layout
         }, auto_open=True, filename='../out/temp-plot.html')
 
-    def plot_csv(self, filename, x_col_name, y_col_name, trace_name='CSV plot'):
-        x = []
-        y = []
-        with open(filename) as csvfile:
-            reader = csv.DictReader(csvfile)
-            for line in reader:
-                x.append(line[x_col_name])
-                y.append(line[y_col_name])
-        self.add_scatter(trace_name, x, y)
+    def plot_csv(self, filename, x_col_name, y_col_name, trace_name='CSV plot', type=None):
+        self.add_trace_from_csv(filename, x_col_name, y_col_name, trace_name, type)
 
         self.x_axis = x_col_name
         self.y_axis = y_col_name
         self.plot()
+
+    def add_trace_from_csv(self, filename, x_col_name, y_col_name, trace_name=None, type='scatter'):
+        if trace_name is None:
+            trace_name = filename
+        x = []
+        y = []
+        with open(filename) as csvfile:
+            reader = csv.DictReader(csvfile, skipinitialspace=True)
+            for line in reader:
+                x.append(line[x_col_name])
+                y.append(line[y_col_name])
+        if type == 'scatter':
+            self.add_scatter(trace_name, x, y)
+        else:
+            self.add_line(trace_name, x, y)
 
 
 if __name__ == '__main__':
