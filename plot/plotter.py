@@ -22,6 +22,20 @@ class Plotter:
             x=x, y=y, name=name, mode='lines'
         ))
 
+    def add_bar(self, name, x, y, error_values=None):
+        if error_values:
+            error_y = {
+                'type': 'data',
+                'array': error_values,
+                'visible': True
+            }
+        else:
+            error_y = None
+
+        self.traces.append(go.Bar(
+            name=name, x=x, y=y, error_y=error_y
+        ))
+
     def plot(self):
         layout = go.Layout(title=self.title,
                            xaxis=go.layout.XAxis(
@@ -33,7 +47,9 @@ class Plotter:
                                title=go.layout.yaxis.Title(
                                    text=self.y_axis
                                )
-                           )
+                           ),
+                           # Always group bars with the same x value
+                           barmode='group'
                            )
         if not os.path.exists('../out'):
             os.mkdir('../out')
