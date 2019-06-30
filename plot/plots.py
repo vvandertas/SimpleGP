@@ -94,7 +94,7 @@ def gp_only_bars_with_error():
             test_error = [float(line['test error']) for line in reader]
             mean_test_error = sum(test_error) / len(test_error)
             var_test_error = np.var(test_error)
-            bar_for_crossover[crossover_rate]['x'].append('Mutation rate: {}'.format(mutation_rate))
+            bar_for_crossover[crossover_rate]['x'].append('{}'.format(mutation_rate))
             bar_for_crossover[crossover_rate]['y'].append(mean_test_error)
             bar_for_crossover[crossover_rate]['error'].append(var_test_error)
 
@@ -103,27 +103,6 @@ def gp_only_bars_with_error():
         data = bar_for_crossover[crossover_type]
         plotter.add_bar('Crossover: {}'.format(crossover_type), data['x'], data['y'], data['error'])
     plotter.plot()
-
-
-def tuning_bars_with_error(gp_cross, gp_mutation, individual_rate, tuning_frequency):
-    prefix = '100_100_'
-    bar_for_crossover = {
-        '0.1': {
-            'error': [],
-            'x': [],
-            'y': []
-        },
-        '0.5': {
-            'error': [],
-            'x': [],
-            'y': []
-        },
-        '1.0': {
-            'error': [],
-            'x': [],
-            'y': []
-        }
-    }
 
 
 def plot_parameter_error_bar_chart(filename, parameter_index, parameter_name, title=None):
@@ -191,4 +170,4 @@ def final_comparison():
 
 
 if __name__ == '__main__':
-    plot_individual_rates()
+    gp_only_bars_with_error()
