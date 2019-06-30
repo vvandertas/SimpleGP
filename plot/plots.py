@@ -3,8 +3,8 @@ import os
 import re
 
 import numpy as np
+from plotter import Plotter
 
-from plot.plotter import Plotter
 
 # Indexes of the meaning of the parameters
 GP_POP_SIZE = 0
@@ -103,6 +103,26 @@ def gp_only_bars_with_error():
         data = bar_for_crossover[crossover_type]
         plotter.add_bar('Crossover: {}'.format(crossover_type), data['x'], data['y'], data['error'])
     plotter.plot()
+
+    def tuning_bars_with_error(gp_cross, gp_mutation, individual_rate, tuning_frequency):
+        prefix = '100_100_'
+        bar_for_crossover = {
+            '0.1': {
+                'error': [],
+                'x': [],
+                'y': []
+            },
+            '0.5': {
+                'error': [],
+                'x': [],
+                'y': []
+            },
+            '1.0': {
+                'error': [],
+                'x': [],
+                'y': []
+            }
+        }
 
 
 if __name__ == '__main__':
