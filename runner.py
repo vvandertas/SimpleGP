@@ -18,7 +18,7 @@ y = df.binaryClass.values
 print(type(y))
 
 # other data
-X = df.drop('binaryClass', axis=1).values #df.iloc[:, df.columns != 'binaryClass'].values
+X = df.drop('binaryClass', axis=1).values
 print(type(X))
 
 result_data_folder = "result_data/"
@@ -28,7 +28,7 @@ GP_MAX_GENERATIONS = 100
 GP_CROSSOVER_RATE = 1.0
 GP_MUTATION_RATE = 0.5
 WEIGHT_TUNING_INDIVIDUAL_RATE = 0.9
-WEIGHT_TUNING_GENERATION_RATE = 5 #10, 20
+WEIGHT_TUNING_GENERATION_RATE = 5
 WEIGHT_TUNING_MAX_GENERATIONS = 100
 REAL_POP_SIZE = 10
 REAL_CROSSOVER_RATE = 0.5
