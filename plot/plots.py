@@ -96,7 +96,7 @@ def gp_only_bars_with_error():
             var_test_error = np.var(test_error)
             bar_for_crossover[crossover_rate]['x'].append('{}'.format(mutation_rate))
             bar_for_crossover[crossover_rate]['y'].append(mean_test_error)
-            bar_for_crossover[crossover_rate]['error'].append(var_test_error)
+            bar_for_crossover[crossover_rate]['error'].append(np.sqrt(float(var_test_error)))
 
     plotter = Plotter(title='GP crossover and mutation mean error', x_axis='Mutation rate', y_axis='Mean test error')
     for crossover_type in bar_for_crossover:
@@ -170,4 +170,4 @@ def final_comparison():
 
 
 if __name__ == '__main__':
-    plot_individual_rates()
+    gp_only_bars_with_error()
