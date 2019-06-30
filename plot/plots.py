@@ -3,8 +3,8 @@ import os
 import re
 
 import numpy as np
-from plotter import Plotter
 
+from plot.plotter import Plotter
 
 # Indexes of the meaning of the parameters
 GP_POP_SIZE = 0
@@ -104,26 +104,91 @@ def gp_only_bars_with_error():
         plotter.add_bar('Crossover: {}'.format(crossover_type), data['x'], data['y'], data['error'])
     plotter.plot()
 
-    def tuning_bars_with_error(gp_cross, gp_mutation, individual_rate, tuning_frequency):
-        prefix = '100_100_'
-        bar_for_crossover = {
-            '0.1': {
-                'error': [],
-                'x': [],
-                'y': []
-            },
-            '0.5': {
-                'error': [],
-                'x': [],
-                'y': []
-            },
-            '1.0': {
-                'error': [],
-                'x': [],
-                'y': []
-            }
+
+def tuning_bars_with_error(gp_cross, gp_mutation, individual_rate, tuning_frequency):
+    prefix = '100_100_'
+    bar_for_crossover = {
+        '0.1': {
+            'error': [],
+            'x': [],
+            'y': []
+        },
+        '0.5': {
+            'error': [],
+            'x': [],
+            'y': []
+        },
+        '1.0': {
+            'error': [],
+            'x': [],
+            'y': []
         }
+    }
+
+
+def plot_parameter_error_bar_chart(filename, parameter_index, parameter_name, title=None):
+    x = []
+    y = []
+    error = []
+    with open(filename) as csv_file:
+        reader = csv.DictReader(csv_file, skipinitialspace=True)
+        for line in reader:
+            parameters = line['parameters'].split('_')
+            individual_rate = parameters[parameter_index]
+            x.append('{}: {}'.format(parameter_name, individual_rate))
+            y.append(line['mean test error'])
+            error.append(line['var test error'])
+
+    if not title:
+        title = '{} error'.format(parameter_name)
+    plotter = Plotter(title, parameter_name, 'Error')
+    plotter.add_bar(None, x, y, error)
+    plotter.plot()
+
+
+def plot_individual_rates():
+    plot_parameter_error_bar_chart('1_plot_individual_rates.csv', WEIGHT_TUNING_INDIVIDUAL_RATE, 'Individual rate')
+
+
+def plot_generation_rate():
+    plot_parameter_error_bar_chart('2_plot_generation_rate.csv', WEIGHT_TUNING_GENERATION_RATE, 'Generation rate')
+
+
+def plot_real_pop_size():
+    plot_parameter_error_bar_chart('3_plot_real_pop_size.csv', REAL_POP_SIZE, 'Real population size')
+
+
+def plot_05_real_crossover():
+    plot_parameter_error_bar_chart('4_plot_05_real_crossover.csv', REAL_MUTATION_RATE, 'Real mutation rate',
+                                   'Real mutation rate error for 0.5 crossover')
+
+
+def plot_09_real_crossover():
+    plot_parameter_error_bar_chart('5_plot_09_real_crossover.csv', REAL_MUTATION_RATE, 'Real mutation rate',
+                                   'Real mutation rate error for 0.9 crossover')
+
+
+def plot_10_gp_crossover():
+    plot_parameter_error_bar_chart('6_plot_10_GP_crossover.csv', GP_MUTATION_RATE, 'GP mutation rate',
+                                   'GP mutation rate error for 1.0 GP crossover')
+
+
+def plot_09_gp_crossover():
+    plot_parameter_error_bar_chart('7_plot_09_GP_crossover.csv', GP_MUTATION_RATE, 'GP mutation rate',
+                                   'GP mutation rate error for 0.9 GP crossover')
+
+
+def final_comparison():
+    plotter = Plotter('GP only vs GP only + real EA', 'Type', 'Mean error')
+    with open('8_final_comparison.csv') as csv_file:
+        reader = csv.DictReader(csv_file, skipinitialspace=True)
+        reader_list = list(reader)
+        gp_only = reader_list[0]
+        real_ea = reader_list[1]
+    plotter.add_bar(name='GP Only vs Real EA', x=['GP Only', 'GP + Real valued EA'],
+                    y=[gp_only['mean test error'], real_ea['mean test error']])
+    plotter.plot()
 
 
 if __name__ == '__main__':
-    gp_only_bars_with_error()
+    final_comparison()
