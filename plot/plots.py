@@ -4,7 +4,7 @@ import re
 
 import numpy as np
 
-from plot.plotter import Plotter
+from plotter import Plotter
 
 # Indexes of the meaning of the parameters
 GP_POP_SIZE = 0
@@ -116,7 +116,7 @@ def plot_parameter_error_bar_chart(filename, parameter_index, parameter_name, ti
             individual_rate = parameters[parameter_index]
             x.append('{}'.format(individual_rate))
             y.append(line['mean test error'])
-            error.append(line['var test error'])
+            error.append(np.sqrt(float(line['var test error'])))
 
     if not title:
         title = '{} error'.format(parameter_name)
@@ -170,4 +170,4 @@ def final_comparison():
 
 
 if __name__ == '__main__':
-    gp_only_bars_with_error()
+    plot_individual_rates()
