@@ -105,7 +105,7 @@ def gp_only_bars_with_error():
     plotter.plot()
 
 
-def plot_parameter_error_bar_chart(filename, parameter_index, parameter_name, title=None):
+def add_error_bar_chart(plotter, filename, parameter_index, name=None):
     x = []
     y = []
     error = []
@@ -117,11 +117,13 @@ def plot_parameter_error_bar_chart(filename, parameter_index, parameter_name, ti
             x.append('{}'.format(individual_rate))
             y.append(line['mean test error'])
             error.append(np.sqrt(float(line['var test error'])))
+    plotter.add_bar(name, x, y, error)
 
+def plot_parameter_error_bar_chart(filename, parameter_index, parameter_name, title=None):
     if not title:
         title = '{} error'.format(parameter_name)
     plotter = Plotter(title, parameter_name, 'Error')
-    plotter.add_bar(None, x, y, error)
+    add_error_bar_chart(plotter, filename, parameter_index)
     plotter.plot()
 
 
@@ -145,6 +147,12 @@ def plot_05_real_crossover():
 def plot_09_real_crossover():
     plot_parameter_error_bar_chart('5_plot_09_real_crossover.csv', REAL_MUTATION_RATE, 'Real mutation rate',
                                    'Real mutation rate error for 0.9 crossover')
+
+def plot_both_real_crossover():
+    plotter = Plotter('Real EA crossover and mutation', 'Mutation rate', 'Mean error')
+    add_error_bar_chart(plotter, '4_plot_05_real_crossover.csv', REAL_MUTATION_RATE, 'Crossover: 0.5')
+    add_error_bar_chart(plotter, '5_plot_09_real_crossover.csv', REAL_MUTATION_RATE, 'Crossover: 0.9')
+    plotter.plot()
 
 
 def plot_10_gp_crossover():
@@ -170,4 +178,4 @@ def final_comparison():
 
 
 if __name__ == '__main__':
-    gp_only_bars_with_error()
+    plot_both_real_crossover()
