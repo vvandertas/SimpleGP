@@ -41,7 +41,8 @@ class Plotter:
                            xaxis=go.layout.XAxis(
                                title=go.layout.xaxis.Title(
                                    text=self.x_axis
-                               )
+                               ),
+                               type="category"
                            ),
                            yaxis=go.layout.YAxis(
                                title=go.layout.yaxis.Title(

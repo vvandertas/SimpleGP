@@ -135,7 +135,7 @@ def plot_parameter_error_bar_chart(filename, parameter_index, parameter_name, ti
         for line in reader:
             parameters = line['parameters'].split('_')
             individual_rate = parameters[parameter_index]
-            x.append('{}: {}'.format(parameter_name, individual_rate))
+            x.append('{}'.format(individual_rate))
             y.append(line['mean test error'])
             error.append(line['var test error'])
 
@@ -191,4 +191,4 @@ def final_comparison():
 
 
 if __name__ == '__main__':
-    final_comparison()
+    plot_individual_rates()
